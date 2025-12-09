@@ -1,5 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { type Assignment, fetchAssignment } from '../api'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
+import { Input } from '../components/ui/input'
+import { Button } from '../components/ui/button'
+import { Gift, Search } from 'lucide-react'
 
 export default function Match() {
   const [email, setEmail] = useState('')
@@ -25,48 +29,78 @@ export default function Match() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <div className="bg-white/80 backdrop-blur rounded-3xl shadow-sm border border-slate-200 p-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Find your match</h2>
-        <p className="text-slate-600 mb-6">Enter the email you registered with to see who you are gifting.</p>
-
-        <form onSubmit={handleLookup} className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <input
-            required
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="you@example.com"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-white font-semibold shadow-sm hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {loading ? 'Looking…' : 'Show match'}
-          </button>
-        </form>
-
-        {status && (
-          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800">
-            {status}
+    <div className="min-h-screen bg-church-bg py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <Card className="max-w-md w-full mx-auto shadow-sm border-church-border">
+        <CardHeader className="text-center">
+          <div className="mx-auto h-12 w-12 bg-church-gold/10 rounded-full flex items-center justify-center mb-4">
+            <Gift className="h-6 w-6 text-church-gold" />
           </div>
-        )}
+          <CardTitle className="text-2xl font-bold text-church-text">Your Gift Match 🎁</CardTitle>
+          <CardDescription>
+            Enter your email to reveal your Secret Santa assignment.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!assignment ? (
+            <form onSubmit={handleLookup} className="space-y-4">
+              <div className="flex space-x-2">
+                <Input
+                  type="email"
+                  placeholder="Enter your email..."
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1"
+                />
+                <Button type="submit" disabled={loading}>
+                  {loading ? <span className="animate-pulse">...</span> : <Search className="h-4 w-4" />}
+                </Button>
+              </div>
+              
+              {status && (
+                <div className={`p-3 rounded-md text-sm text-center ${
+                  status.startsWith('Error') || status.includes('No assignment')
+                    ? 'bg-yellow-50 text-yellow-700 border border-yellow-100' 
+                    : 'bg-green-50 text-green-700 border border-green-100'
+                }`}>
+                  {status}
+                </div>
+              )}
+            </form>
+          ) : (
+            <div className="space-y-6 animate-in fade-in zoom-in duration-300">
+              <div className="bg-church-gold/5 rounded-xl p-6 border border-church-gold/20 text-center">
+                <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">You are gifting to</p>
+                <h3 className="text-3xl font-bold text-church-text mb-1">{assignment.receiver_name}</h3>
+                {assignment.receiver_email && (
+                  <p className="text-sm text-gray-400">{assignment.receiver_email}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-medium text-church-text flex items-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-church-gold mr-2"></span>
+                  Likes & Interests
+                </h4>
+                <div className="bg-gray-50 p-4 rounded-lg text-gray-600 text-sm italic border border-gray-100">
+                  "{assignment.receiver_notes || "No specific preferences listed. Surprise them!"}"
+                </div>
+              </div>
 
-        {assignment && (
-          <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50 px-5 py-4 text-slate-900">
-            <p className="text-sm font-semibold text-indigo-700 mb-1">You are gifting</p>
-            <p className="text-xl font-bold">{assignment.receiver_name}</p>
-            {assignment.receiver_email && (
-              <p className="text-sm text-slate-700">Email: {assignment.receiver_email}</p>
-            )}
-            {assignment.receiver_phone && (
-              <p className="text-sm text-slate-700">Phone: {assignment.receiver_phone}</p>
-            )}
-          </div>
-        )}
-      </div>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  setAssignment(null)
+                  setEmail('')
+                }}
+              >
+                Check Another
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

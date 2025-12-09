@@ -1,5 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { registerParticipant } from '../api'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
+import { Textarea } from '../components/ui/textarea'
+import { Button } from '../components/ui/button'
 
 export default function Register() {
   const [fullName, setFullName] = useState('')
@@ -27,69 +32,79 @@ export default function Register() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <div className="bg-white/80 backdrop-blur rounded-3xl shadow-sm border border-slate-200 p-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Register for Secret Santa</h2>
-        <p className="text-slate-600 mb-6">Share your contact so we can match you and send your assignment.</p>
+    <div className="min-h-screen bg-church-bg py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <Card className="max-w-md w-full mx-auto shadow-sm border-church-border">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center text-church-text">Join the Gift Match</CardTitle>
+          <CardDescription className="text-center text-gray-500">
+            Enter your details to participate in the Secret Santa event.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="full-name">Full Name</Label>
+              <Input
+                id="full-name"
+                placeholder="Jane Doe"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="jane@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone (Optional)</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+1 (555) 000-0000"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="notes">Likes & Interests</Label>
+              <Textarea
+                id="notes"
+                placeholder="I love books, coffee, and gardening..."
+                className="min-h-[100px]"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </div>
+            
+            {status && (
+              <div className={`p-3 rounded-md text-sm ${
+                status.startsWith('Error') 
+                  ? 'bg-red-50 text-red-700 border border-red-100' 
+                  : 'bg-green-50 text-green-700 border border-green-100'
+              }`}>
+                {status}
+              </div>
+            )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Full name</label>
-            <input
-              required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Jane Doe"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Phone (optional)</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="555-123-4567"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Notes (diet, gift ideas, etc.)</label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Allergies, preferences, sizes..."
-              rows={3}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-white font-semibold shadow-sm hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {loading ? 'Submitting…' : 'Submit'}
-          </button>
-        </form>
-
-        {status && (
-          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800">
-            {status}
-          </div>
-        )}
-      </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Registering...' : 'Register'}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <p className="text-xs text-gray-400 text-center">
+            By registering, you agree to participate in the gift exchange.
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   )
 }

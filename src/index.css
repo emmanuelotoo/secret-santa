@@ -1,19 +1,75 @@
 @import "tailwindcss";
 
+@theme {
+  --color-church-gold: #C79E4C;
+  --color-church-gold-hover: #B08D44;
+  --color-church-bg: #FAFAF9; /* Slightly lighter/cleaner off-white (stone-50) */
+  --color-church-text: #2E2E2E;
+  --color-church-border: #E7E5E4; /* stone-200 */
+  
+  /* Add a serif font for the editorial look */
+  --font-serif: "Playfair Display", "Times New Roman", Times, serif;
+}
+
 :root {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  
   color-scheme: light;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  
+  --background: #FAFAF9;
+  --foreground: #2E2E2E;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at 20% 20%, #eef2ff 0, #f8fafc 25%, #f8fafc 100%);
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar - Minimal */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E7E5E4;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D6D3D1;
 }
 
 a {
   color: inherit;
+  text-decoration: none;
 }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-reveal-up {
+  animation: revealUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }

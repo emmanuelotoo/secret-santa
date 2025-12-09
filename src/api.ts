@@ -18,6 +18,7 @@ export type Assignment = {
   receiver_name: string
   receiver_email?: string
   receiver_phone?: string
+  receiver_notes?: string
 }
 
 export async function registerParticipant(input: ParticipantInput) {
@@ -44,6 +45,16 @@ export async function registerParticipant(input: ParticipantInput) {
   return { success: true, message: 'Registered!' }
 }
 
+export async function fetchParticipants() {
+  const supabase = getSupabaseClient()
+  if (!supabase) {
+    return { success: true, data: [] as Participant[] }
+  }
+  const { data, error } = await supabase.from('participants').select('*')
+  if (error) return { success: false, message: error.message }
+  return { success: true, data: data as any[] }
+}
+
 export async function fetchAssignment(email: string) {
   const supabase = getSupabaseClient()
   if (!supabase) {
@@ -55,13 +66,14 @@ export async function fetchAssignment(email: string) {
         receiver_id: 'local-receiver',
         receiver_name: 'Sample Match',
         receiver_email: 'sample@example.com',
+        receiver_notes: 'I love books and coffee.',
       },
     }
   }
 
   const { data, error } = await supabase
     .from('assignments_view')
-    .select('giver_id, receiver_id, receiver_name, receiver_email, receiver_phone')
+    .select('giver_id, receiver_id, receiver_name, receiver_email, receiver_phone, receiver_notes')
     .eq('giver_email', email)
     .maybeSingle()
 
@@ -72,7 +84,7 @@ export async function fetchAssignment(email: string) {
   return { success: true, assignment: data as Assignment | null }
 }
 
-export async function triggerMatching() {
+export async function runMatchingAlgorithm() {
   const supabase = getSupabaseClient()
   if (!supabase) {
     return { success: true, mock: true, message: 'Matching simulated locally.' }
@@ -87,7 +99,7 @@ export async function triggerMatching() {
   return { success: true, message: 'Matches generated.' }
 }
 
-export async function triggerNotifications() {
+export async function sendNotifications() {
   const supabase = getSupabaseClient()
   if (!supabase) {
     return { success: true, mock: true, message: 'Notifications simulated locally.' }
