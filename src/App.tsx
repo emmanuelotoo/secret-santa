@@ -62,10 +62,13 @@ function Nav() {
 }
 
 function App() {
+  const location = useLocation()
+  const isLandingPage = location.pathname === '/'
+
   return (
     <div className="min-h-screen text-slate-900">
-      <Nav />
-      <main className="max-w-5xl mx-auto pb-16">
+      {!isLandingPage && <Nav />}
+      <main className={isLandingPage ? "" : "max-w-5xl mx-auto pb-16"}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
