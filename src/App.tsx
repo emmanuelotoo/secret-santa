@@ -3,15 +3,27 @@ import Landing from './pages/Landing'
 import Register from './pages/Register'
 import Admin from './pages/Admin'
 import AdminLogin from './pages/AdminLogin'
+import MemberLogin from './pages/MemberLogin'
 import Match from './pages/Match'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
-// Protected Route Component
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth()
+// Protected Route Component for Admin
+function ProtectedAdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAdminAuthenticated } = useAuth()
   
-  if (!isAuthenticated) {
+  if (!isAdminAuthenticated) {
     return <Navigate to="/admin/login" replace />
+  }
+  
+  return <>{children}</>
+}
+
+// Protected Route Component for Members
+function ProtectedMemberRoute({ children }: { children: React.ReactNode }) {
+  const { isMemberAuthenticated } = useAuth()
+  
+  if (!isMemberAuthenticated) {
+    return <Navigate to="/join" replace />
   }
   
   return <>{children}</>
@@ -76,21 +88,30 @@ function Nav() {
 
 function AppContent() {
   const location = useLocation()
-  const isLandingPage = location.pathname === '/' || location.pathname === '/admin/login'
+  const isFullScreenPage = location.pathname === '/' || location.pathname === '/admin/login' || location.pathname === '/join'
 
   return (
     <div className="min-h-screen text-slate-900">
-      {!isLandingPage && <Nav />}
-      <main className={isLandingPage ? "" : "max-w-5xl mx-auto pb-16"}>
+      {!isFullScreenPage && <Nav />}
+      <main className={isFullScreenPage ? "" : "max-w-5xl mx-auto pb-16"}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/match" element={<Match />} />
+          <Route path="/join" element={<MemberLogin />} />
+          <Route path="/register" element={
+            <ProtectedMemberRoute>
+              <Register />
+            </ProtectedMemberRoute>
+          } />
+          <Route path="/match" element={
+            <ProtectedMemberRoute>
+              <Match />
+            </ProtectedMemberRoute>
+          } />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={
-            <ProtectedRoute>
+            <ProtectedAdminRoute>
               <Admin />
-            </ProtectedRoute>
+            </ProtectedAdminRoute>
           } />
         </Routes>
       </main>

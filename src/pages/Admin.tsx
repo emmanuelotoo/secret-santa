@@ -14,11 +14,11 @@ export default function Admin() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<string | null>(null)
   const [showMatchDialog, setShowMatchDialog] = useState(false)
-  const { logout } = useAuth()
+  const { logoutAdmin } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout()
+    logoutAdmin()
     navigate('/')
   }
 

@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Lock, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Users, ArrowRight, ArrowLeft } from 'lucide-react'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
 import { Link } from 'react-router-dom'
 
-export default function AdminLogin() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+export default function MemberLogin() {
+  const [accessCode, setAccessCode] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { loginAdmin } = useAuth()
+  const { loginMember } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,12 +23,12 @@ export default function AdminLogin() {
     // Simulate a brief delay for UX
     await new Promise(resolve => setTimeout(resolve, 500))
 
-    const success = loginAdmin(username, password)
+    const success = loginMember(accessCode)
     
     if (success) {
-      navigate('/admin')
+      navigate('/register')
     } else {
-      setError('Invalid username or password')
+      setError('Invalid access code. Please contact your church administrator.')
     }
     
     setIsLoading(false)
@@ -66,12 +65,12 @@ export default function AdminLogin() {
           <Card className="border-church-border/40 shadow-2xl bg-white/80 backdrop-blur-sm">
             <CardHeader className="text-center space-y-4 pb-2">
               <div className="mx-auto w-16 h-16 bg-church-gold/10 rounded-full flex items-center justify-center">
-                <Lock className="w-8 h-8 text-church-gold" />
+                <Users className="w-8 h-8 text-church-gold" />
               </div>
               <div>
-                <CardTitle className="text-2xl font-serif text-church-text">Admin Access</CardTitle>
+                <CardTitle className="text-2xl font-serif text-church-text">Member Access</CardTitle>
                 <CardDescription className="mt-2">
-                  Enter your credentials to access the admin panel
+                  Enter the church access code to join the Secret Santa exchange
                 </CardDescription>
               </div>
             </CardHeader>
@@ -84,30 +83,16 @@ export default function AdminLogin() {
                 )}
                 
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="accessCode">Access Code</Label>
                   <Input
-                    id="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter username"
-                    required
-                    autoComplete="username"
-                    className="h-12"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
+                    id="accessCode"
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password"
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value)}
+                    placeholder="Enter your church access code"
                     required
-                    autoComplete="current-password"
-                    className="h-12"
+                    autoComplete="off"
+                    className="h-12 text-center tracking-widest text-lg"
                   />
                 </div>
 
@@ -122,11 +107,11 @@ export default function AdminLogin() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Signing in...
+                      Verifying...
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-2">
-                      Sign In
+                      Join Exchange
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
                   )}
@@ -135,7 +120,7 @@ export default function AdminLogin() {
 
               <div className="mt-8 pt-6 border-t border-church-border/40 text-center">
                 <p className="text-xs text-gray-400">
-                  Contact your administrator if you need access credentials
+                  The access code is shared by your church administrator
                 </p>
               </div>
             </CardContent>
