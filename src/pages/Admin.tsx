@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { runMatchingAlgorithm, sendNotifications, fetchParticipants } from '../api'
 import { Users, Shuffle, Bell, LogOut } from 'lucide-react'
 import { Button } from '../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table'
 import { AlertDialog } from '../components/ui/alert-dialog'
-import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('participants')
@@ -13,6 +14,13 @@ export default function Admin() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<string | null>(null)
   const [showMatchDialog, setShowMatchDialog] = useState(false)
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
 
   useEffect(() => {
     loadParticipants()
@@ -84,12 +92,14 @@ export default function Admin() {
           </Button>
         </nav>
         <div className="p-4 border-t border-church-border">
-          <Link to="/">
-            <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50">
-              <LogOut className="mr-2 h-4 w-4" />
-              Exit
-            </Button>
-          </Link>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
         </div>
       </aside>
 
@@ -98,7 +108,7 @@ export default function Admin() {
         <div className="max-w-5xl mx-auto space-y-8">
           <div className="flex justify-between items-center md:hidden mb-6">
              <h2 className="text-xl font-bold text-church-gold">Admin Panel</h2>
-             <Link to="/"><Button variant="ghost" size="sm">Exit</Button></Link>
+             <Button variant="ghost" size="sm" onClick={handleLogout}>Logout</Button>
           </div>
 
           {status && (

@@ -1,8 +1,21 @@
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, Route, Routes, useLocation, Navigate } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Register from './pages/Register'
 import Admin from './pages/Admin'
+import AdminLogin from './pages/AdminLogin'
 import Match from './pages/Match'
+import { AuthProvider, useAuth } from './context/AuthContext'
+
+// Protected Route Component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth()
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />
+  }
+  
+  return <>{children}</>
+}
 
 function Nav() {
   const location = useLocation()
@@ -61,9 +74,9 @@ function Nav() {
   )
 }
 
-function App() {
+function AppContent() {
   const location = useLocation()
-  const isLandingPage = location.pathname === '/'
+  const isLandingPage = location.pathname === '/' || location.pathname === '/admin/login'
 
   return (
     <div className="min-h-screen text-slate-900">
@@ -73,10 +86,23 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/match" element={<Match />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          } />
         </Routes>
       </main>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
 

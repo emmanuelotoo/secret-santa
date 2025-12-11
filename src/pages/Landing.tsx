@@ -79,7 +79,7 @@ export default function Landing() {
         <div className="absolute top-0 right-0 p-6 lg:p-12 z-20 w-full flex justify-between lg:justify-end items-center">
           <span className="lg:hidden text-xs font-bold tracking-widest uppercase text-church-text">Grace Community</span>
           <Link 
-            to="/admin" 
+            to="/admin/login" 
             className="text-xs font-medium tracking-widest uppercase text-gray-400 hover:text-church-text transition-all duration-300 relative group px-4 py-2 -mr-4"
           >
             Admin Login
